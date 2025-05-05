@@ -63,24 +63,43 @@ button {
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-}
 
-button:hover {
-  background-color: var(--color-blue-500);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-button:focus {
-  outline: 2px solid var(--color-blue-300);
-  outline-offset: 0px;
-}
-button:active {
-  outline: none;
-}
-button:disabled {
-  background-color: var(--color-gray-500);
-  opacity: 0.2;
-  color: var(--color-gray-600);
-  cursor: not-allowed;
+  &.loading {
+    padding: 0.5rem;
+    aspect-ratio: 1;
+    border-radius: 9999px;
+    margin: 0 auto;
+
+    svg {
+      animation: spin 3s linear infinite;
+      font-size: 2rem;
+    }
+  }
+
+  &:hover {
+    background-color: var(--color-blue-500);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid var(--color-blue-300);
+    outline-offset: 0px;
+  }
+
+  &:active {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:disabled:not(.loading) {
+    background-color: var(--color-gray-500);
+    opacity: 0.2;
+    color: var(--color-gray-600);
+    cursor: not-allowed;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -136,4 +155,13 @@ ol {
 h1,
 h2 {
   font-family: "Literata";
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

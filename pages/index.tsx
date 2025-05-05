@@ -6,7 +6,7 @@ import { createClient } from "@/utils/supabase/server-props";
 import styles from "./styles.module.css";
 import { useState } from "react";
 import { BiBookAdd, BiBookOpen } from "react-icons/bi";
-import { PiPencilCircleDuotone } from "react-icons/pi";
+import { PiPencilCircleDuotone, PiSpinnerLight } from "react-icons/pi";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const supabase = createClient(context);
@@ -31,10 +31,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function PrivatePage({ user }: { user: User }) {
   const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [fileNames, setFileNames] = useState<string[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (loading) {
+      alert("Samsa is crafting you an mind-blowing essay; please wait a moment.");
+      return;
+    }
+
+    setLoading(true);
     const input = document.getElementById("book_uploads") as HTMLInputElement;
     if (!input?.files) return;
 
@@ -49,6 +57,7 @@ export default function PrivatePage({ user }: { user: User }) {
     });
 
     const result = await res.json();
+    setLoading(false);
     alert(result.message);
     setReport(result.report);
   };
@@ -98,8 +107,20 @@ export default function PrivatePage({ user }: { user: User }) {
             <small>PDF, EPUB, XML</small>
           </div>
 
-          <button type="submit" disabled={fileNames.length === 0}>
-            <PiPencilCircleDuotone style={{ fontSize: 20 }} /> Generate Essay
+          <button
+            type="submit"
+            disabled={fileNames.length === 0}
+            className={loading ? "loading" : ""}
+          >
+            {loading ? (
+              <>
+                <PiSpinnerLight />
+              </>
+            ) : (
+              <>
+                <PiPencilCircleDuotone style={{ fontSize: 20 }} /> Generate Essay
+              </>
+            )}
           </button>
         </form>
       </div>
