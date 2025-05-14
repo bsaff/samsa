@@ -32,6 +32,7 @@ export default function LoginPage() {
     router.push("/");
   };
 
+  // @todo: apply card styling
   return (
     <main className={styles.container}>
       <h1>Login</h1>

@@ -5,7 +5,6 @@
   justify-content: center;
   padding: 2rem;
   background-color: var(--background);
-  min-height: 100vh;
 }
 
 .form {
@@ -33,16 +32,11 @@
 .button {
   padding: 0.75rem;
   font-size: 1rem;
-  background-color: var(--color-blue-500);
   color: var(--color-white);
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-}
-
-.button:hover {
-  background-color: var(--color-blue-600);
 }
 
 .error {

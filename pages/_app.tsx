@@ -1,6 +1,6 @@
 import { Inter, Literata } from "next/font/google";
 import type { AppProps } from "next/app";
-import "../_app/globals.css";
+import "../app/globals.css";
 import Layout from "@/components/layout";
 
 const inter = Inter({

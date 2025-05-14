@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
-import { spawn } from "child_process";
-import { unlinkSync } from "fs";
+import { randomUUID } from "crypto";
+import fs from "fs";
+import path from "path";
 
 type ResponseData = {
-  message: string;
-  fileNames?: string[];
-  report?: string;
+  jobId: string;
 };
 
 export const config = {
@@ -20,46 +19,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(405).end();
   }
 
-  const form = formidable({ multiples: true, keepExtensions: true });
+  const jobId = randomUUID();
+  const uploadDir = path.join("scripts/jobs", jobId);
 
   try {
-    const [, files] = await form.parse(req);
-    const paths = files.files?.map((f) => f.filepath) || [];
+    fs.mkdirSync(uploadDir, { recursive: true });
 
-    console.log(paths);
-
-    // Start book ingestion
-    const p = spawn("scripts/python", ["scripts/ingest_books.py", ...paths]);
-
-    let payload = "";
-    p.stdout.on("data", (chunk) => {
-      payload += chunk.toString();
+    const form = formidable({
+      multiples: true,
+      keepExtensions: true,
+      uploadDir,
+      filename: (name, ext, part) => part.originalFilename || `${randomUUID()}${ext}`,
     });
 
-    p.stderr.on("data", (chunk) => {
-      console.debug(chunk.toString());
-    });
-
-    await new Promise<void>((resolve, reject) => {
-      p.on("close", (code) => {
-        // Clean-up tmp files
-        Promise.all(paths.map(unlinkSync)).then(() => {
-          // Send response
-          if (code !== 0) {
-            return reject(new Error(`Python exited ${code}`));
-          }
-          res.status(200).json({ message: "Done", report: JSON.parse(payload) });
-          resolve();
-        });
-      });
-    });
-
-    // const fileNames = files.files?.map(f => f.originalFilename || f.newFilename)
-    // return res.status(200).json({ message: "Files uploaded successfully", fileNames });
-  } catch (err) {
-    if (err) {
-      console.error("Upload error:", err);
-      return res.status(500).json({ message: "Failed to upload file." });
-    }
+    await form.parse(req);
+    res.status(200).json({ jobId });
+  } catch (error) {
+    console.error(error);
+    res.status(500).end();
   }
 }

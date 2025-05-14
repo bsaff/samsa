@@ -31,6 +31,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function PrivatePage({ user }: { user: User }) {
   const [report, setReport] = useState(null);
+  const [infoMsg, setInfoMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [fileNames, setFileNames] = useState<string[]>([]);
 
@@ -38,7 +39,7 @@ export default function PrivatePage({ user }: { user: User }) {
     e.preventDefault();
 
     if (loading) {
-      alert("Samsa is crafting you an mind-blowing essay; please wait a moment.");
+      alert("Samsa is crafting your essay; please wait a moment.");
       return;
     }
 
@@ -57,9 +58,35 @@ export default function PrivatePage({ user }: { user: User }) {
     });
 
     const result = await res.json();
-    setLoading(false);
-    alert(result.message);
-    setReport(result.report);
+    const es = new EventSource(`/api/job?jobId=${result.jobId}`);
+
+    es.addEventListener("error", (e) => {
+      if (es.readyState === EventSource.CLOSED) {
+        console.log("Stream closed");
+        return;
+      }
+      console.error(e);
+      alert("Sorry, looks like Samsa ran into an issue while generating your essay :(");
+      setLoading(false);
+    });
+
+    es.addEventListener("payload", (e) => {
+      const data = JSON.parse(e.data);
+      setReport(JSON.parse(data?.data));
+    });
+
+    es.addEventListener("info", (e) => {
+      const data = JSON.parse(e.data);
+      setInfoMsg(data?.data);
+    });
+
+    es.addEventListener("done", () => {
+      es.close();
+      console.log("recieved done");
+      setLoading(false);
+    });
+
+    console.log(result.jobId);
   };
 
   return (
@@ -122,9 +149,10 @@ export default function PrivatePage({ user }: { user: User }) {
               </>
             )}
           </button>
+          {infoMsg && <p className={styles.info}>{infoMsg}</p>}
         </form>
       </div>
-      |
+
       {report && (
         <div className={styles.card}>
           {/* optional header or title */}

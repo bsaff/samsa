@@ -77,8 +77,7 @@ button {
   }
 
   &:hover {
-    background-color: var(--color-blue-500);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-blue-700);
   }
 
   &:focus {
@@ -115,6 +114,7 @@ button {
   --color-blue-50: #eff6ff;
   --color-blue-500: #3b82f6;
   --color-blue-600: #2563eb;
+  --color-blue-700: #1853d3;
   --color-blue-950: #041741;
   --color-white: #ffffff;
   --color-red-300: #e87272;
