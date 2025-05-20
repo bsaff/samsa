@@ -33,10 +33,6 @@
   flex-direction: column;
   align-items: center;
 
-  h4 {
-    width: 100%;
-  }
-
   .uploads {
     padding: 0.5rem;
     width: 100%;
@@ -99,9 +95,7 @@
 .uploadedTitle {
   text-transform: uppercase;
   letter-spacing: 0.02rem;
-  font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
   color: var(--color-text-default);
 }
 
@@ -111,4 +105,30 @@ p.info {
   padding: 1rem;
   border-radius: 1rem;
   font-size: 0.8rem;
+}
+
+button.back {
+  margin-right: auto;
+  background: transparent;
+  color: var(--color-blue-950);
+  padding: 0;
+}
+
+.result {
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+.uploadsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.clearLink {
+  text-transform: uppercase;
+  color: var(--color-blue-800);
 }

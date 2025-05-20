@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 import { createClient } from "@/utils/supabase/server-props";
 import styles from "./styles.module.css";
 import { useState } from "react";
-import { BiBookAdd, BiBookOpen } from "react-icons/bi";
+import { BiBookAdd, BiBookOpen, BiArrowBack } from "react-icons/bi";
 import { PiPencilCircleDuotone, PiSpinnerLight } from "react-icons/pi";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -30,7 +30,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export default function PrivatePage({ user }: { user: User }) {
-  const [report, setReport] = useState(null);
+  const [report, setReport] = useState("");
   const [infoMsg, setInfoMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [fileNames, setFileNames] = useState<string[]>([]);
@@ -91,71 +91,97 @@ export default function PrivatePage({ user }: { user: User }) {
 
   return (
     <main className={styles.wrapper}>
-      <div className={styles.card}>
-        <form
-          method="post"
-          encType="multipart/form-data"
-          onSubmit={handleSubmit}
-          className={styles.form}
-        >
-          <div className={styles.uploader}>
-            <div className={styles.uploads}>
-              {fileNames.length > 0 && <h4 className={styles.uploadedTitle}>Books:</h4>}
-              {!!fileNames.length ? (
-                <ul>
-                  {fileNames.map((name, index) => (
-                    <li key={name} style={{}}>
-                      <BiBookOpen style={getStyle(index)} />
-                      {name}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div>
-                  <BiBookOpen style={{ fontSize: 30 }} />
-                </div>
-              )}
-            </div>
-            <label htmlFor="book_uploads">
-              <BiBookAdd /> Add books to upload
-            </label>
-            <input
-              type="file"
-              id="book_uploads"
-              accept=".pdf,.epub,.xml"
-              multiple
-              onChange={(e) => {
-                if (e.target.files?.length) {
-                  setFileNames([...fileNames, ...Array.from(e.target.files).map((f) => f.name)]);
-                }
-              }}
-            />
-            <small>Accepted formats:</small>
-            <small>PDF, EPUB, XML</small>
-          </div>
-
-          <button
-            type="submit"
-            disabled={fileNames.length === 0}
-            className={loading ? "loading" : ""}
-          >
-            {loading ? (
-              <>
-                <PiSpinnerLight />
-              </>
-            ) : (
-              <>
-                <PiPencilCircleDuotone style={{ fontSize: 20 }} /> Generate Essay
-              </>
-            )}
-          </button>
-          {infoMsg && <p className={styles.info}>{infoMsg}</p>}
-        </form>
-      </div>
-
-      {report && (
+      {!report ? (
         <div className={styles.card}>
-          {/* optional header or title */}
+          <form
+            method="post"
+            encType="multipart/form-data"
+            onSubmit={handleSubmit}
+            className={styles.form}
+          >
+            <div className={styles.uploader}>
+              <div className={styles.uploads}>
+                {fileNames.length > 0 && (
+                  <div className={styles.uploadsHeader}>
+                    <h4 className={styles.uploadedTitle}>Books:</h4>
+                    <a
+                      href="#"
+                      className={styles.clearLink}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setFileNames([]);
+                        const input = document.getElementById("book_uploads") as HTMLInputElement;
+                        if (input) input.value = "";
+                      }}
+                    >
+                      Remove all
+                    </a>
+                  </div>
+                )}
+                {!!fileNames.length ? (
+                  <ul>
+                    {fileNames.map((name, index) => (
+                      <li key={name} style={{}}>
+                        <BiBookOpen style={getStyle(index)} />
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div>
+                    <BiBookOpen style={{ fontSize: 30 }} />
+                  </div>
+                )}
+              </div>
+              <label htmlFor="book_uploads">
+                <BiBookAdd /> Add books to upload
+              </label>
+              <input
+                type="file"
+                id="book_uploads"
+                accept=".pdf,.epub,.xml"
+                multiple
+                onChange={(e) => {
+                  if (e.target.files?.length) {
+                    setFileNames([...fileNames, ...Array.from(e.target.files).map((f) => f.name)]);
+                  }
+                }}
+              />
+              <small>Accepted formats:</small>
+              <small>PDF, EPUB, XML</small>
+            </div>
+
+            <button
+              type="submit"
+              disabled={fileNames.length === 0}
+              className={loading ? "loading" : ""}
+            >
+              {loading ? (
+                <>
+                  <PiSpinnerLight />
+                </>
+              ) : (
+                <>
+                  <PiPencilCircleDuotone style={{ fontSize: 20 }} /> Generate Essay
+                </>
+              )}
+            </button>
+            {infoMsg && <p className={styles.info}>{infoMsg}</p>}
+          </form>
+        </div>
+      ) : (
+        <div className={`${styles.card} ${styles.result}`}>
+          <button
+            type="button"
+            onClick={() => {
+              setReport("");
+              setInfoMsg("");
+            }}
+            className={`${styles.back}`}
+            aria-label="Back"
+          >
+            <BiArrowBack style={{ fontSize: 20 }} />
+          </button>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{report}</ReactMarkdown>
         </div>
       )}

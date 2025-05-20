@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
 
           p.stderr.on("data", (chunk) => {
             const text = chunk.toString();
-            if (text.toLowerCase().startsWith("error")) {
+            if (text.toLowerCase().includes("error")) {
               send("fail");
               console.error(text);
             }
