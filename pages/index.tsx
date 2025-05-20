@@ -118,7 +118,7 @@ export default function PrivatePage({ user }: { user: User }) {
                     </a>
                   </div>
                 )}
-                {!!fileNames.length ? (
+                {!!fileNames.length && (
                   <ul>
                     {fileNames.map((name, index) => (
                       <li key={name} style={{}}>
@@ -127,10 +127,6 @@ export default function PrivatePage({ user }: { user: User }) {
                       </li>
                     ))}
                   </ul>
-                ) : (
-                  <div>
-                    <BiBookOpen style={{ fontSize: 30 }} />
-                  </div>
                 )}
               </div>
               <label htmlFor="book_uploads">
@@ -149,6 +145,18 @@ export default function PrivatePage({ user }: { user: User }) {
               />
               <small>Accepted formats:</small>
               <small>PDF, EPUB, XML</small>
+            </div>
+
+            <hr className={styles.sectionDivider} />
+            <div>
+              <h4 className={`${styles.uploadedTitle} ${styles.analysisPromptLabel}`}>Prompt:</h4>
+              <textarea
+                className={styles.prompt}
+                placeholder="Describe the type of intertextual analysis you'd like to perform. For example, compare and contrast how these texts explore the theme of societal influence on individual desires."
+                name="report_prompt"
+                id="report_prompt"
+                required
+              />
             </div>
 
             <button

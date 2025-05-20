@@ -1,10 +1,13 @@
 .wrapper {
   display: flex;
   flex-direction: column;
+  margin: 0 1rem;
+  margin-bottom: 1rem;
 }
 
 .card {
-  min-width: 450px;
+  width: 450px;
+  max-width: 100%;
   color: var(--color-text-default);
   margin: 0 auto;
   padding: 2rem;
@@ -97,6 +100,7 @@
   letter-spacing: 0.02rem;
   font-weight: 600;
   color: var(--color-text-default);
+  font-size: 0.8rem;
 }
 
 p.info {
@@ -115,7 +119,7 @@ button.back {
 }
 
 .result {
-  max-width: 800px;
+  width: 800px;
   line-height: 1.6;
 }
 
@@ -125,10 +129,34 @@ button.back {
   justify-content: space-between;
   width: 100%;
   margin-bottom: 0.5rem;
-  font-size: 0.8rem;
 }
 
 .clearLink {
   text-transform: uppercase;
+  font-size: 0.8rem;
   color: var(--color-blue-800);
+}
+
+.sectionDivider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.analysisPromptLabel {
+  margin-bottom: 0.5rem;
+}
+
+.prompt {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-gray-200);
+  font-size: 1rem;
+  resize: vertical;
+  background: var(--color-gray-50);
+  color: var(--color-gray-900);
+  font-family: inherit;
+  box-sizing: border-box;
 }
