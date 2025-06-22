@@ -6,7 +6,8 @@ import path from "path";
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const jobId = searchParams.get("jobId");
-  if (!jobId) {
+  const prompt = searchParams.get("prompt");
+  if (!jobId || !prompt) {
     return new Response("Bad request", { status: 400 });
   }
 
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
         .readdir(dir)
         .then((filenames) => {
           const paths = filenames.map((f) => path.join(dir, f));
-          const p = spawn("scripts/python", ["scripts/ingest_books.py", ...paths]);
+          const p = spawn("scripts/python", ["scripts/ingest_books.py", prompt, ...paths]);
 
           req.signal.addEventListener("abort", () => {
             p.kill();

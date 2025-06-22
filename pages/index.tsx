@@ -58,7 +58,17 @@ export default function PrivatePage({ user }: { user: User }) {
     });
 
     const result = await res.json();
-    const es = new EventSource(`/api/job?jobId=${result.jobId}`);
+
+    // Get the prompt value and limit its length for URI safety
+    const promptInput = document.getElementById("report_prompt") as HTMLTextAreaElement;
+    let promptValue = promptInput?.value || "";
+    const MAX_PROMPT_LENGTH = 512; // conservative limit for URI safety
+    if (promptValue.length > MAX_PROMPT_LENGTH) {
+      promptValue = promptValue.slice(0, MAX_PROMPT_LENGTH);
+    }
+    const encodedPrompt = encodeURIComponent(promptValue);
+
+    const es = new EventSource(`/api/job?jobId=${result.jobId}&prompt=${encodedPrompt}`);
 
     es.addEventListener("error", (e) => {
       if (es.readyState === EventSource.CLOSED) {
@@ -87,6 +97,8 @@ export default function PrivatePage({ user }: { user: User }) {
     });
 
     console.log(result.jobId);
+    // Quick ok response
+    console.log("ok");
   };
 
   return (
@@ -136,6 +148,7 @@ export default function PrivatePage({ user }: { user: User }) {
                 type="file"
                 id="book_uploads"
                 accept=".pdf,.epub,.xml"
+                maxLength={512}
                 multiple
                 onChange={(e) => {
                   if (e.target.files?.length) {
