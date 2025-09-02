@@ -1,35 +1,12 @@
-import type { User } from "@supabase/supabase-js";
-import type { GetServerSidePropsContext } from "next";
+"use client"
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { createClient } from "@/utils/supabase/server-props";
 import styles from "./styles.module.css";
 import { useState } from "react";
 import { BiBookAdd, BiBookOpen, BiArrowBack } from "react-icons/bi";
 import { PiPencilCircleDuotone, PiSpinnerLight } from "react-icons/pi";
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const supabase = createClient(context);
-
-  const { data, error } = await supabase.auth.getUser();
-
-  if (error || !data) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      user: data.user,
-    },
-  };
-}
-
-export default function PrivatePage({ user }: { user: User }) {
+export default function HomePage() {
   const [report, setReport] = useState("");
   const [infoMsg, setInfoMsg] = useState("");
   const [loading, setLoading] = useState(false);
@@ -56,6 +33,11 @@ export default function PrivatePage({ user }: { user: User }) {
       method: "POST",
       body: formData,
     });
+
+    if (res.status !== 200) {
+      alert("Something went wrong!")
+      console.error(res)
+    }
 
     const result = await res.json();
 
@@ -94,6 +76,7 @@ export default function PrivatePage({ user }: { user: User }) {
       es.close();
       console.log("recieved done");
       setLoading(false);
+      setFileNames([])
     });
 
     console.log(result.jobId);

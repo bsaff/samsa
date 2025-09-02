@@ -13,8 +13,9 @@ export async function GET(req: NextRequest) {
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
-    start(controller) {
+    start: (controller) => {
       let aborted = false;
+
       function send(event: string, data?: string) {
         if (!aborted) {
           let payload = `event: ${event}\n`;
@@ -25,6 +26,7 @@ export async function GET(req: NextRequest) {
       }
 
       const dir = path.join("scripts/jobs", jobId);
+
       fs.promises
         .readdir(dir)
         .then((filenames) => {
