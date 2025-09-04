@@ -12,7 +12,7 @@ Clone the backend python source code in a sibling repo.
 git clone https://github.com/bsaff/samsa-ai
 ```
 
-Follow setup instructions in samsa-ai before continuing.
+Follow setup instructions in [samsa-ai](https://github.com/bsaff/samsa-ai/) before continuing.
 
 
 Back in samsa-ui, you may have to symlink to the python project within your scripts directory:
