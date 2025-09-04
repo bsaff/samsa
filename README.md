@@ -1,6 +1,9 @@
 # Samsa: An Essay Generator 📗
 Use this app to generate an essay about books you've uploaded through an analytical lens of your choosing.
 
+<img width="1436" height="784" alt="image" src="https://github.com/user-attachments/assets/fed6d897-1355-416d-944f-f590509c1990" />
+
+
 ## Prerequisites
 
 Clone the backend python source code in a sibling repo.
